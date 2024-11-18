@@ -350,28 +350,63 @@ print(voting.count_votes())
 
 ## 6.2 Exercise 2: Simple Blockchain
 ```python
+import time
+import hashlib
+
+# SimpleBlock represents a single block in our blockchain
+# Each block contains data, a reference to the previous block's hash, and a timestamp
 class SimpleBlock:
     def __init__(self, data, previous_hash):
+        # Store the actual data/transaction in the block
         self.data = data
+        # Link to previous block through its hash, creating the chain
         self.previous_hash = previous_hash
+        # Record when this block was created
         self.timestamp = time.time()
+        # Calculate block hash when created
+        self.hash = self.calculate_hash()
         
+    def calculate_hash(self):
+        # Convert block data into a hash using SHA-256
+        block_content = str(self.data) + str(self.previous_hash) + str(self.timestamp)
+        return hashlib.sha256(block_content.encode()).hexdigest()
+        
+# SimpleChain manages the entire blockchain
+# It maintains a list of blocks and provides methods to add new blocks
 class SimpleChain:
     def __init__(self):
+        # Initialize the blockchain with the genesis block (first block)
         self.chain = [self.create_first_block()]
         
     def create_first_block(self):
+        # Create the genesis block with default data and no previous hash
         return SimpleBlock("First Block!", "0")
         
     def add_block(self, data):
+        # Get the last block in the chain
         previous_block = self.chain[-1]
+        # Create a new block with the given data and previous block's hash
         new_block = SimpleBlock(data, previous_block.hash)
+        # Add the new block to the chain
         self.chain.append(new_block)
+        
+    #method to illustrate print the blockchain
+    def print_blocks(self):
+        for block in self.chain:
+            print("Data:", block.data)
+            print("Hash:", block.hash)
+            print("Previous Hash:", block.previous_hash)
+            print("Timestamp:", block.timestamp)
+            print()
 
-# Try it out!
-blockchain = SimpleChain()
-blockchain.add_block("Alice sends $10 to Bob")
-blockchain.add_block("Charlie sends $5 to David")
+# Example usage of our simple blockchain
+blockchain = SimpleChain()  # Create a new blockchain
+blockchain.add_block("Alice sends $10 to Bob")  # Add a transaction
+blockchain.add_block("Charlie sends $5 to David")  # Add another transaction
+blockchain.add_block("SRM Students enjoy!")
+
+
+print(blockchain.print_blocks())
 ```
 
 # Key Points to Remember 🎯
