@@ -294,7 +294,17 @@ stateDiagram-v2
 
 #### Basic Activity Example:
 ```java
-public class SimpleActivity extends AppCompatActivity {
+package com.example.srmbasic;
+
+// Required imports
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+
+public class MainActivity extends AppCompatActivity {
     // Step 1: Declare variables for UI elements
     private TextView messageText;
     private Button clickButton;
@@ -304,7 +314,7 @@ public class SimpleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // Step 2: Basic setup
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_simple);
+        setContentView(R.layout.activity_main);
 
         // Step 3: Find our UI elements
         messageText = findViewById(R.id.messageText);     // Find TextView
@@ -334,9 +344,18 @@ public class SimpleActivity extends AppCompatActivity {
 
     // Save state when activity might be destroyed
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("clickCount", clickCount);
+    }
+
+    // Optional: Override onDestroy for cleanup
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Remove references to views to prevent memory leaks
+        messageText = null;
+        clickButton = null;
     }
 }
 ```
@@ -344,29 +363,35 @@ public class SimpleActivity extends AppCompatActivity {
 Corresponding layout (activity_simple.xml):
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/messageText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Click the button!"
-        android:textSize="20sp"
-        android:layout_marginBottom="16dp"/>
+        android:text="Clicked 0 times"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@id/clickButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/clickButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Click Me"/>
+        android:text="Click Me"
+        android:contentDescription="Increment counter button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/messageText" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 ```
 
 ### 4.2 Understanding Fragments 🧩
